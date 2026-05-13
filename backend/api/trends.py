@@ -19,7 +19,8 @@ def trends_country(country: str, db: Session = Depends(get_db)):
                 indicator=r.indicator, series=[], ai_insight_narrative=r.ai_insight_narrative,
                 data_source_label=r.data_source_label
             )
-        by_indicator[r.indicator].series.append(TrendPoint(period=r.period.date(), value=r.value))
+        period_val = r.period.date() if hasattr(r.period, 'date') else r.period
+        by_indicator[r.indicator].series.append(TrendPoint(period=period_val, value=r.value))
     copper = db.execute(
         select(CommodityIndicator).where(CommodityIndicator.metal == "copper").order_by(CommodityIndicator.observed_at)
     ).scalars().all()
