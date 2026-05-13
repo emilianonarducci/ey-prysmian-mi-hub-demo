@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom";
 import { Globe, LineChart, Newspaper, ListChecks } from "lucide-react";
 import { useProjects, useNews } from "@/lib/queries";
+import PrysmianLogo from "@/components/PrysmianLogo";
 
 export default function LandingPage() {
   const projects = useProjects();
   const news = useNews();
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Market Intelligence Hub</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Market Intelligence Hub</h1>
+        <PrysmianLogo variant="full" height={36} />
+      </div>
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="aspect-[3/2] rounded-lg bg-cover bg-center"
              style={{ backgroundImage: "url(/mockup-reference/image1.jpg)" }} />
