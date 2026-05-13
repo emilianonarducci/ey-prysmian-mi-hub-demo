@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-import { Globe, LineChart, Newspaper, ListChecks, ArrowRight, Pickaxe, Activity, Building2, Sparkles, TrendingUp, AlertCircle } from "lucide-react";
+import { Globe, LineChart, Newspaper, ListChecks, ArrowRight, Pickaxe, Activity, Building2, Sparkles, TrendingUp, AlertCircle, Inbox, BellRing, Bot, FileCheck2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/lib/api";
 import { useProjects, useNews } from "@/lib/queries";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Stat } from "@/components/ui/Stat";
@@ -16,6 +18,19 @@ export default function LandingPage() {
   const newsCount = news.data?.length ?? 0;
   const recentNews = (news.data ?? []).slice(0, 5);
   const flaggedProjects = (projects.data?.items ?? []).filter((p) => p.flagged_of_interest).slice(0, 4);
+
+  const reviewStats = useQuery({
+    queryKey: ["review-stats-landing"],
+    queryFn: async () => (await api.get<{ by_status: Record<string, number> }>("/review/stats")).data,
+  });
+  const alertsStats = useQuery({
+    queryKey: ["alerts-stats-landing"],
+    queryFn: async () => (await api.get<{ unread: number; by_severity: Record<string, number> }>("/alerts/stats")).data,
+  });
+
+  const draftsCount = reviewStats.data?.by_status?.draft ?? 0;
+  const highAlerts = alertsStats.data?.by_severity?.high ?? 0;
+  const unreadAlerts = alertsStats.data?.unread ?? 0;
 
   return (
     <div className="space-y-8 max-w-[1400px]">
@@ -46,6 +61,36 @@ export default function LandingPage() {
             <Link to="/projects" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white font-medium text-sm transition-colors">
               <Pickaxe size={15} /> Mining pipeline
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Today's Brief */}
+      <section className="card p-5 border-l-4 border-l-prysmian-green">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 rounded-lg bg-accent-green-light text-accent-green flex items-center justify-center shrink-0">
+            <Sparkles size={18} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-sm font-semibold text-ink">Today's AI Brief</h2>
+              <Badge tone="green" dot>Auto-generated · evidence-backed</Badge>
+              <span className="text-[11px] text-ink-faint ml-auto">Generated {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+            </div>
+            <p className="mt-2 text-sm text-ink-muted leading-relaxed">
+              {generateBrief({ projectsTotal, newsCount, draftsCount, highAlerts, flaggedCount: flaggedProjects.length })}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link to="/review" className="inline-flex items-center gap-1.5 chip bg-accent-amber-light text-accent-amber hover:bg-accent-amber/15">
+                <Inbox size={11} /> {draftsCount} drafts to review
+              </Link>
+              <Link to="/alerts" className="inline-flex items-center gap-1.5 chip bg-accent-red-light text-accent-red hover:bg-accent-red/15">
+                <BellRing size={11} /> {highAlerts} high-severity alerts
+              </Link>
+              <Link to="/agents" className="inline-flex items-center gap-1.5 chip bg-accent-green-light text-accent-green hover:bg-accent-green/15">
+                <Bot size={11} /> 2 agents active
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -179,6 +224,16 @@ function greeting() {
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function generateBrief({ projectsTotal, newsCount, draftsCount, highAlerts, flaggedCount }: { projectsTotal: number; newsCount: number; draftsCount: number; highAlerts: number; flaggedCount: number }) {
+  const parts: string[] = [];
+  parts.push(`AI agents have surfaced ${newsCount} news items and ${projectsTotal} mining/grid projects in the last cycle`);
+  if (flaggedCount > 0) parts.push(`${flaggedCount} flagged of strategic interest`);
+  if (draftsCount > 0) parts.push(`${draftsCount} drafts awaiting MI team validation`);
+  if (highAlerts > 0) parts.push(`${highAlerts} high-severity alerts triggered`);
+  parts.push("copper momentum sustained on supply tightening, EU permits trending mixed");
+  return parts.join(" · ") + ".";
 }
 
 function relTime(iso: string | null | undefined) {

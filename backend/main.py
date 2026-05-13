@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.api import health, projects, news, trends, countries, agents, evidence, search
+from backend.api import health, projects, news, trends, countries, agents, evidence, search, review, alerts
 
 app = FastAPI(title="EY Prysmian MI Hub Demo API", version="0.1.0")
 
@@ -20,3 +20,5 @@ app.include_router(countries.router, prefix="/api")
 app.include_router(agents.router, prefix="/api")
 app.include_router(evidence.router, prefix="/api")
 app.include_router(search.router, prefix="/api")
+app.include_router(review.router, prefix="/api")
+app.include_router(alerts.router, prefix="/api")

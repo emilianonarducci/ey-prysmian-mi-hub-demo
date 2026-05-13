@@ -9,6 +9,9 @@ import NewsReportsPage from "./pages/NewsReportsPage";
 import LoginPage from "./pages/LoginPage";
 import ComparePage from "./pages/ComparePage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
+import ReviewQueuePage from "./pages/ReviewQueuePage";
+import AgentsPage from "./pages/AgentsPage";
+import AlertsPage from "./pages/AlertsPage";
 
 const qc = new QueryClient();
 
@@ -42,6 +45,9 @@ export default function App() {
             <Route path="/projects" element={<ProjectListPage />} />
             <Route path="/projects/:id" element={<ProjectDetailPage />} />
             <Route path="/compare" element={<ComparePage />} />
+            <Route path="/review" element={<ReviewQueuePage />} />
+            <Route path="/agents" element={<AgentsPage />} />
+            <Route path="/alerts" element={<AlertsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

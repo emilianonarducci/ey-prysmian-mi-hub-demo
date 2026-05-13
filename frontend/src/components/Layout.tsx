@@ -1,16 +1,22 @@
 import { Link, Outlet, useLocation, useNavigate, NavLink } from "react-router-dom";
-import { LayoutDashboard, Globe, LineChart, Newspaper, ListChecks, LogOut, Search, Bell, Sparkles, GitCompare, Pickaxe } from "lucide-react";
+import { LayoutDashboard, Globe, LineChart, Newspaper, ListChecks, LogOut, Search, Bell, Sparkles, GitCompare, Pickaxe, Inbox, Bot, BellRing } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/lib/api";
 import PrysmianLogo from "./PrysmianLogo";
 import { useGlobalSearch } from "@/lib/queries";
 
-const NAV = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/country/italy", label: "Country ID", icon: Globe, match: "/country" },
-  { to: "/compare", label: "Compare", icon: GitCompare },
-  { to: "/trends", label: "Market Trends", icon: LineChart },
-  { to: "/news", label: "News & Reports", icon: Newspaper },
-  { to: "/projects", label: "Projects", icon: ListChecks },
+type NavItem = { to: string; label: string; icon: any; end?: boolean; match?: string; badgeKey?: "review" | "alerts"; group?: string };
+const NAV: NavItem[] = [
+  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true, group: "Workspace" },
+  { to: "/review", label: "Review queue", icon: Inbox, badgeKey: "review", group: "Workspace" },
+  { to: "/alerts", label: "Alerts", icon: BellRing, badgeKey: "alerts", group: "Workspace" },
+  { to: "/agents", label: "AI Agents", icon: Bot, group: "Workspace" },
+  { to: "/country/italy", label: "Country ID", icon: Globe, match: "/country", group: "Intelligence" },
+  { to: "/compare", label: "Compare", icon: GitCompare, group: "Intelligence" },
+  { to: "/trends", label: "Market Trends", icon: LineChart, group: "Intelligence" },
+  { to: "/news", label: "News & Reports", icon: Newspaper, group: "Intelligence" },
+  { to: "/projects", label: "Projects", icon: ListChecks, group: "Intelligence" },
 ];
 
 export default function Layout() {
@@ -19,6 +25,21 @@ export default function Layout() {
   const userEmail = sessionStorage.getItem("mi_hub_user") || "";
 
   const [searchOpen, setSearchOpen] = useState(false);
+
+  const reviewStats = useQuery({
+    queryKey: ["review-stats-nav"],
+    queryFn: async () => (await api.get<{ by_status: Record<string, number> }>("/review/stats")).data,
+    refetchInterval: 20000,
+  });
+  const alertsCount = useQuery({
+    queryKey: ["alerts-count-nav"],
+    queryFn: async () => (await api.get<{ unread: number }>("/alerts/stats").then(r => r.data).catch(() => ({ unread: 0 }))),
+    refetchInterval: 30000,
+  });
+  const badgeMap: Record<string, number> = {
+    review: reviewStats.data?.by_status?.draft ?? 0,
+    alerts: alertsCount.data?.unread ?? 0,
+  };
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -53,31 +74,42 @@ export default function Layout() {
             </div>
           </Link>
         </div>
-        <nav className="p-3 flex-1 space-y-0.5">
-          {NAV.map((n) => {
-            const active = n.end
-              ? loc.pathname === n.to
-              : (n.match ? loc.pathname.startsWith(n.match) : loc.pathname.startsWith(n.to));
-            return (
-              <NavLink
-                key={n.to}
-                to={n.soon ? "#" : n.to}
-                onClick={(e) => { if (n.soon) e.preventDefault(); }}
-                className={`group flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-prysmian-green/8 text-prysmian-green"
-                    : "text-ink-muted hover:text-ink hover:bg-surface-subtle"
-                } ${n.soon ? "opacity-60 cursor-not-allowed" : ""}`}
-                end={n.end as any}
-              >
-                <span className="flex items-center gap-2.5">
-                  <n.icon size={16} className={active ? "text-prysmian-green" : "text-ink-faint group-hover:text-ink-muted"} />
-                  {n.label}
-                </span>
-                {n.soon && <span className="chip bg-surface-subtle text-ink-subtle text-[9px]">SOON</span>}
-              </NavLink>
-            );
-          })}
+        <nav className="p-3 flex-1 overflow-y-auto">
+          {(["Workspace", "Intelligence"] as const).map((group) => (
+            <div key={group} className="mb-3">
+              <div className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-ink-faint">{group}</div>
+              <div className="space-y-0.5">
+                {NAV.filter((n) => n.group === group).map((n) => {
+                  const active = n.end
+                    ? loc.pathname === n.to
+                    : (n.match ? loc.pathname.startsWith(n.match) : loc.pathname.startsWith(n.to));
+                  const badge = n.badgeKey ? badgeMap[n.badgeKey] : 0;
+                  return (
+                    <NavLink
+                      key={n.to}
+                      to={n.to}
+                      className={`group flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        active
+                          ? "bg-prysmian-green/8 text-prysmian-green"
+                          : "text-ink-muted hover:text-ink hover:bg-surface-subtle"
+                      }`}
+                      end={n.end as any}
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <n.icon size={16} className={active ? "text-prysmian-green" : "text-ink-faint group-hover:text-ink-muted"} />
+                        {n.label}
+                      </span>
+                      {badge > 0 && (
+                        <span className={`chip text-[10px] ${active ? "bg-prysmian-green text-white" : n.badgeKey === "alerts" ? "bg-accent-red-light text-accent-red" : "bg-accent-amber-light text-accent-amber"}`}>
+                          {badge}
+                        </span>
+                      )}
+                    </NavLink>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
         <div className="p-3 border-t border-line">
           <div className="px-3 py-2 rounded-lg bg-surface-muted flex items-center gap-2.5">
