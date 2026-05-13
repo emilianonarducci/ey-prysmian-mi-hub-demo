@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useProjects } from "@/lib/queries";
+import EvidenceMetadataViewer from "@/components/EvidenceMetadataViewer";
 
 export default function ProjectListPage() {
   const [filters, setFilters] = useState<Record<string, string>>({});
   const { data, isLoading } = useProjects(filters);
+  const [evidenceId, setEvidenceId] = useState<string | null>(null);
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Project List</h1>
@@ -34,7 +36,7 @@ export default function ProjectListPage() {
               </thead>
               <tbody>
                 {data.items.map((p) => (
-                  <tr key={p.id} className="border-t hover:bg-insight-bg">
+                  <tr key={p.id} onClick={() => p.evidence_id && setEvidenceId(p.evidence_id)} className="border-t hover:bg-insight-bg cursor-pointer">
                     <td className="px-3 py-2">{p.name}</td>
                     <td className="px-3 py-2 text-right">{p.capex_estimate_musd?.toLocaleString()}</td>
                     <td className="px-3 py-2 text-right">{p.capacity_mw?.toLocaleString()}</td>
@@ -51,6 +53,7 @@ export default function ProjectListPage() {
           )}
         </section>
       </div>
+      {evidenceId && <EvidenceMetadataViewer evidenceId={evidenceId} onClose={() => setEvidenceId(null)} />}
     </div>
   );
 }
