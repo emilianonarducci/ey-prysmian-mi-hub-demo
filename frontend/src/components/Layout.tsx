@@ -22,12 +22,8 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="bg-ey-navy text-white px-6 py-3 flex items-center justify-between gap-6">
-        <div className="flex items-center gap-4 shrink-0">
-          <PrysmianLogo variant="full" height={28} onDark />
-          <span className="text-white/30">|</span>
-          <span className="text-sm font-semibold tracking-wide">Market Intelligence Hub</span>
-        </div>
+      <header className="bg-ey-navy text-white px-6 py-3 flex items-center gap-6">
+        <span className="text-sm font-semibold tracking-wide shrink-0">Market Intelligence Hub</span>
         <nav className="flex gap-1 flex-1 justify-center">
           {navItems.map((n) => {
             const active = loc.pathname === n.to || (n.to !== "/" && loc.pathname.startsWith(n.to));
@@ -57,6 +53,7 @@ export default function Layout() {
               </button>
             </>
           )}
+          <PrysmianLogo variant="full" height={26} onDark className="ml-2" />
         </div>
       </header>
       <main className="p-6">

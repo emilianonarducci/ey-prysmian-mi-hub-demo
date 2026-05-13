@@ -6,9 +6,10 @@
  *   - "full" (default): full logo (mark + wordmark)
  *   - "mark": shows only the leftmost portion (the "p" mark) via CSS clipping
  *
- * `onDark`: when the logo is placed on a dark background, the dark-navy
- *   wordmark loses contrast. Setting `onDark` wraps the image in a white
- *   rounded card so the brand-faithful asset stays readable.
+ * `onDark`: when placed on a dark background, applies a brightness/contrast/
+ *   saturate filter so the dark-navy wordmark lifts and stays readable while
+ *   the mark gradient is preserved. No background wrapper — fully transparent
+ *   so the logo blends into the surface.
  */
 interface PrysmianLogoProps {
   variant?: "full" | "mark";
@@ -19,6 +20,7 @@ interface PrysmianLogoProps {
 
 const FULL_ASPECT = 3840 / 897;
 const MARK_VIEWPORT_RATIO = 0.21;
+const DARK_BG_FILTER = "brightness(1.6) contrast(0.95) saturate(0.85)";
 
 export default function PrysmianLogo({
   variant = "full",
@@ -26,6 +28,7 @@ export default function PrysmianLogo({
   onDark = false,
   className = "",
 }: PrysmianLogoProps) {
+  const imgFilter = onDark ? DARK_BG_FILTER : undefined;
   if (variant === "mark") {
     const clipWidth = Math.round(height * FULL_ASPECT * MARK_VIEWPORT_RATIO);
     return (
@@ -37,17 +40,18 @@ export default function PrysmianLogo({
         <img
           src="/prysmian-logo.png"
           alt="Prysmian"
-          style={{ height, width: "auto", maxWidth: "none" }}
+          style={{ height, width: "auto", maxWidth: "none", filter: imgFilter }}
         />
       </span>
     );
   }
-  const wrapperClasses = onDark
-    ? "inline-flex items-center bg-white rounded-md px-2 py-1"
-    : "inline-flex items-center";
   return (
-    <span className={`${wrapperClasses} ${className}`} aria-label="Prysmian">
-      <img src="/prysmian-logo.png" alt="Prysmian" style={{ height, width: "auto" }} />
+    <span className={`inline-flex items-center ${className}`} aria-label="Prysmian">
+      <img
+        src="/prysmian-logo.png"
+        alt="Prysmian"
+        style={{ height, width: "auto", filter: imgFilter }}
+      />
     </span>
   );
 }

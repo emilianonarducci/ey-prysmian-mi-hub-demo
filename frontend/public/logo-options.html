@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Visual companion — logo placement options</title>
+<style>
+  :root {
+    --ey-navy: #1E2A4A;
+    --ey-navy-dark: #0D1A33;
+    --insight-bg: #F0F2F8;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+  }
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+  h1 { margin: 0 0 8px; font-size: 24px; }
+  p.lead { margin: 0 0 32px; color: #475569; font-size: 14px; }
+  .option {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .option-label {
+    padding: 12px 20px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .option-label strong { font-size: 14px; }
+  .option-label .desc { font-size: 12px; color: #64748b; }
+  .option-label .tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: #475569;
+    font-family: ui-monospace, monospace;
+  }
+  .header {
+    background: var(--ey-navy);
+    color: white;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 64px;
+  }
+  .header .brand-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+  .header .sep { color: rgba(255,255,255,0.25); }
+  .header .title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  .header nav {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+  }
+  .header nav a {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+  }
+  .header nav a.active { background: rgba(255,255,255,0.1); color: white; }
+
+  .header .right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .header .user {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+  }
+  .header .logout {
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .logo-img {
+    height: 28px;
+    width: auto;
+    display: block;
+  }
+  .logo-pill {
+    background: white;
+    border-radius: 6px;
+    padding: 4px 8px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .logo-inverted { filter: brightness(0) invert(1); }
+  .logo-bright {
+    filter: brightness(1.6) contrast(0.95) saturate(0.85);
+  }
+  .logo-shadow {
+    filter: drop-shadow(0 0 1px rgba(255,255,255,0.6)) drop-shadow(0 0 4px rgba(255,255,255,0.35));
+  }
+  .mark-clip {
+    overflow: hidden;
+    height: 32px;
+    display: inline-block;
+  }
+  .mark-clip img {
+    height: 32px;
+    width: auto;
+    max-width: none;
+    transform: translateX(0);
+  }
+
+  .compare {
+    padding: 16px 20px;
+    background: #fafbfc;
+    font-size: 11px;
+    color: #475569;
+    line-height: 1.5;
+  }
+  .compare ul { margin: 0; padding-left: 18px; }
+  .compare li { margin-bottom: 4px; }
+  .pros { color: #15803d; }
+  .cons { color: #b91c1c; }
+
+  /* Login mini-preview */
+  .login-preview {
+    display: flex;
+    height: 240px;
+    border-top: 1px solid var(--border);
+  }
+  .login-left {
+    flex: 1;
+    background: linear-gradient(135deg, rgba(30,42,74,0.85), rgba(30,42,74,0.7), rgba(0,135,90,0.4)),
+                url('/mockup-reference/image1.jpg') center/cover;
+    padding: 16px 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .login-right {
+    flex: 1;
+    background: white;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .login-right h3 { margin: 8px 0 4px; font-size: 16px; }
+  .login-right small { color: #64748b; }
+  .login-left-tr {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+  .footer {
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .vote {
+    padding: 14px 20px;
+    background: white;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .vote-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: #1e293b;
+    color: white;
+    border: none;
+    font-size: 12px;
+    cursor: default;
+    opacity: 0.6;
+  }
+  code {
+    background: #f1f5f9;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 11px;
+  }
+
+  h2 { font-size: 16px; margin: 32px 0 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Visual companion — logo placement (top-right, integrated)</h1>
+  <p class="lead">
+    Confronto 4 modi di mostrare il logo brand in alto a destra nel header dark navy del Layout, senza wrapper bianco. Scorri e dimmi quale preferisci.
+  </p>
+
+  <h2>Header bar — 4 varianti</h2>
+
+  <!-- OPTION A -->
+  <div class="option">
+    <div class="option-label">
+      <div>
+        <strong>A) White silhouette (filter: brightness(0) invert(1))</strong>
+        <div class="desc">Logo come stencil bianco · perde i colori brand · massima leggibilità · stile "monochrome on dark"</div>
+      </div>
+      <span class="tag">filter: brightness(0) invert(1)</span>
+    </div>
+    <div class="header">
+      <nav>
+        <a class="active">Landing</a><a>Country ID</a><a>Market Trends</a><a>News &amp; Reports</a><a>Project List</a>
+      </nav>
+      <div class="right">
+        <span class="user">mario.rossi@prysmian.com</span>
+        <button class="logout">Logout</button>
+        <img src="/prysmian-logo.png" class="logo-img logo-inverted" alt="Prysmian" />
+      </div>
+    </div>
+    <div class="compare">
+      <ul>
+        <li class="pros">+ Perfetta integrazione con sfondo dark · sembra "nativo" del header</li>
+        <li class="pros">+ Massima leggibilità wordmark</li>
+        <li class="cons">− Colori brand persi (verde→cyan→blu del mark)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="option">
+    <div class="option-label">
+      <div>
+        <strong>B) Mark only — full color</strong>
+        <div class="desc">Solo il simbolo "p" (mark), in colori originali · zero wordmark · compatto e brand-faithful</div>
+      </div>
+      <span class="tag">variant="mark" · no filter</span>
+    </div>
+    <div class="header">
+      <nav>
+        <a class="active">Landing</a><a>Country ID</a><a>Market Trends</a><a>News &amp; Reports</a><a>Project List</a>
+      </nav>
+      <div class="right">
+        <span class="user">mario.rossi@prysmian.com</span>
+        <button class="logout">Logout</button>
+        <span class="mark-clip" style="width: 28px;"><img src="/prysmian-logo.png" /></span>
+      </div>
+    </div>
+    <div class="compare">
+      <ul>
+        <li class="pros">+ Colori brand preservati (gradient verde→cyan→blu)</li>
+        <li class="pros">+ Molto compatto, lascia spazio alla navigazione</li>
+        <li class="cons">− Wordmark "prysmian" non visibile (può essere chiaro o no a seconda del contesto)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OPTION C -->
+  <div class="option">
+    <div class="option-label">
+      <div>
+        <strong>C) Full color + soft glow (drop-shadow halo)</strong>
+        <div class="desc">Logo originale a colori · halo bianco molto leggero sotto · wordmark resta scuro ma "stacca" dal navy</div>
+      </div>
+      <span class="tag">filter: drop-shadow white halo</span>
+    </div>
+    <div class="header">
+      <nav>
+        <a class="active">Landing</a><a>Country ID</a><a>Market Trends</a><a>News &amp; Reports</a><a>Project List</a>
+      </nav>
+      <div class="right">
+        <span class="user">mario.rossi@prysmian.com</span>
+        <button class="logout">Logout</button>
+        <img src="/prysmian-logo.png" class="logo-img logo-shadow" alt="Prysmian" />
+      </div>
+    </div>
+    <div class="compare">
+      <ul>
+        <li class="pros">+ Colori brand preservati al 100%</li>
+        <li class="pros">+ Sembra "applicato" sopra come un sticker · effetto integrato</li>
+        <li class="cons">− Wordmark dark-navy ancora limite di contrasto · leggibilità ridotta vs A</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- OPTION D -->
+  <div class="option">
+    <div class="option-label">
+      <div>
+        <strong>D) Brightened + slight desaturate</strong>
+        <div class="desc">Logo schiarito · wordmark passa a grigio chiaro · mark rimane visibile · zero halo</div>
+      </div>
+      <span class="tag">filter: brightness(1.6) contrast(0.95) saturate(0.85)</span>
+    </div>
+    <div class="header">
+      <nav>
+        <a class="active">Landing</a><a>Country ID</a><a>Market Trends</a><a>News &amp; Reports</a><a>Project List</a>
+      </nav>
+      <div class="right">
+        <span class="user">mario.rossi@prysmian.com</span>
+        <button class="logout">Logout</button>
+        <img src="/prysmian-logo.png" class="logo-img logo-bright" alt="Prysmian" />
+      </div>
+    </div>
+    <div class="compare">
+      <ul>
+        <li class="pros">+ Wordmark leggibile (grigio chiaro su navy)</li>
+        <li class="pros">+ Brand colors del mark conservati</li>
+        <li class="cons">− Effetto "washed" del wordmark, meno bold del logo originale</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Login page — preview (hero dark + form bianco)</h2>
+
+  <!-- Login mini preview — option C on hero dark -->
+  <div class="option">
+    <div class="option-label">
+      <div>
+        <strong>Login con logo top-right · variante C (drop-shadow halo)</strong>
+        <div class="desc">Esempio: logo top-right sul hero dark · stesso treatment del header</div>
+      </div>
+      <span class="tag">variant="full" + filter halo</span>
+    </div>
+    <div class="login-preview">
+      <div class="login-left">
+        <img src="/prysmian-logo.png" class="logo-img logo-shadow login-left-tr" style="height: 32px;" alt="Prysmian" />
+        <div>
+          <h2 style="margin: 0 0 8px; font-size: 22px;">Market Intelligence Hub</h2>
+          <p style="margin: 0; font-size: 11px; color: rgba(255,255,255,0.85);">AI-powered always-on intelligence</p>
+        </div>
+        <span class="footer">Powered by EY · Production-aligned scaffold</span>
+      </div>
+      <div class="login-right">
+        <h3>Sign in</h3>
+        <small>Access your Marketing Intelligence Hub</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="option">
+    <div class="option-label">
+      <div>
+        <strong>Login con logo top-right · variante A (silhouette bianco)</strong>
+        <div class="desc">Più clean · più "default tech demo"</div>
+      </div>
+      <span class="tag">filter: brightness(0) invert(1)</span>
+    </div>
+    <div class="login-preview">
+      <div class="login-left">
+        <img src="/prysmian-logo.png" class="logo-img logo-inverted login-left-tr" style="height: 32px;" alt="Prysmian" />
+        <div>
+          <h2 style="margin: 0 0 8px; font-size: 22px;">Market Intelligence Hub</h2>
+          <p style="margin: 0; font-size: 11px; color: rgba(255,255,255,0.85);">AI-powered always-on intelligence</p>
+        </div>
+        <span class="footer">Powered by EY · Production-aligned scaffold</span>
+      </div>
+      <div class="login-right">
+        <h3>Sign in</h3>
+        <small>Access your Marketing Intelligence Hub</small>
+      </div>
+    </div>
+  </div>
+
+  <h2>Su quale procedere?</h2>
+  <p style="font-size: 13px; color: #475569;">
+    Dimmi <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, oppure una combinazione (es. <code>A su header, C su login</code>). Procedo a implementare nel Layout e LoginPage.
+  </p>
+</div>
+</body>
+</html>
