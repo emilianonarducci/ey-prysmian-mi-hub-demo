@@ -16,7 +16,7 @@ up:
 	docker compose up -d --build
 	@echo "Waiting for postgres..."
 	@until docker compose exec -T postgres pg_isready -U mihub >/dev/null 2>&1; do sleep 1; done
-	@echo "All services up. Frontend: http://localhost:3000  API docs: http://localhost:8000/docs"
+	@echo "All services up. Frontend: http://localhost:3010  API docs: http://localhost:8000/docs"
 
 down:
 	docker compose down
