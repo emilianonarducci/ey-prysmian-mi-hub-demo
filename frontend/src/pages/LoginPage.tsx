@@ -37,8 +37,14 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       {/* Left: hero */}
       <div
-        className="hidden lg:flex flex-1 bg-cover bg-center relative"
-        style={{ backgroundImage: "url(/mockup-reference/image1.jpg)" }}
+        className="hidden lg:flex flex-1 relative overflow-hidden"
+        style={{
+          backgroundImage: "url(/mockup-reference/image1.jpg)",
+          backgroundSize: "auto 115%",
+          backgroundPosition: "center bottom",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "#0a2233",
+        }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-ey-navy/85 via-ey-navy/70 to-prysmian-green/40" />
         <div className="relative z-10 flex flex-col justify-between p-12 text-white">
