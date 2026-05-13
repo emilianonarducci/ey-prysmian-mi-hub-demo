@@ -8,18 +8,24 @@ export default function LandingPage() {
   const news = useNews();
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Market Intelligence Hub</h1>
-        <PrysmianLogo variant="full" height={36} />
-      </div>
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="aspect-[3/2] rounded-lg bg-cover bg-center"
-             style={{ backgroundImage: "url(/mockup-reference/image1.jpg)" }} />
-        <div className="grid grid-cols-2 gap-4">
-          <KpiCard label="Mining projects" value={String(projects.data?.total ?? "—")} />
-          <KpiCard label="News articles" value={String(news.data?.length ?? "—")} />
-          <KpiCard label="Countries" value="5" />
-          <KpiCard label="Last update" value={new Date().toLocaleDateString()} />
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 items-stretch">
+        <div className="rounded-lg overflow-hidden bg-ey-navy flex items-center justify-center">
+          <img
+            src="/mockup-reference/image1.jpg"
+            alt="Europe map — Market Intelligence Hub"
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-end">
+            <PrysmianLogo variant="full" height={40} />
+          </div>
+          <div className="grid grid-cols-2 gap-4 flex-1">
+            <KpiCard label="Mining projects" value={String(projects.data?.total ?? "—")} />
+            <KpiCard label="News articles" value={String(news.data?.length ?? "—")} />
+            <KpiCard label="Countries" value="5" />
+            <KpiCard label="Last update" value={new Date().toLocaleDateString()} />
+          </div>
         </div>
       </section>
       <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
