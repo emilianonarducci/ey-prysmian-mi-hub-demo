@@ -42,7 +42,7 @@ export default function LoginPage() {
       >
         <div className="absolute inset-0 bg-gradient-to-br from-ey-navy/85 via-ey-navy/70 to-prysmian-green/40" />
         <div className="relative z-10 flex flex-col justify-between p-12 text-white">
-          <PrysmianLogo variant="full" height={40} />
+          <PrysmianLogo variant="full" height={36} onDark />
           <div className="max-w-lg">
             <h1 className="text-4xl font-bold leading-tight mb-4">
               Market Intelligence Hub

@@ -24,7 +24,7 @@ export default function Layout() {
     <div className="min-h-screen bg-white">
       <header className="bg-ey-navy text-white px-6 py-3 flex items-center justify-between gap-6">
         <div className="flex items-center gap-4 shrink-0">
-          <PrysmianLogo variant="full" height={32} />
+          <PrysmianLogo variant="full" height={28} onDark />
           <span className="text-white/30">|</span>
           <span className="text-sm font-semibold tracking-wide">Market Intelligence Hub</span>
         </div>

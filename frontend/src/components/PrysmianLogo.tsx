@@ -1,62 +1,53 @@
+/**
+ * Renders the Prysmian brand logo using the official PNG asset
+ * at /public/prysmian-logo.png (3840×897, aspect ratio ≈ 4.28:1).
+ *
+ * `variant`:
+ *   - "full" (default): full logo (mark + wordmark)
+ *   - "mark": shows only the leftmost portion (the "p" mark) via CSS clipping
+ *
+ * `onDark`: when the logo is placed on a dark background, the dark-navy
+ *   wordmark loses contrast. Setting `onDark` wraps the image in a white
+ *   rounded card so the brand-faithful asset stays readable.
+ */
 interface PrysmianLogoProps {
   variant?: "full" | "mark";
-  className?: string;
   height?: number;
+  onDark?: boolean;
+  className?: string;
 }
 
-export default function PrysmianLogo({ variant = "full", className = "", height = 32 }: PrysmianLogoProps) {
+const FULL_ASPECT = 3840 / 897;
+const MARK_VIEWPORT_RATIO = 0.21;
+
+export default function PrysmianLogo({
+  variant = "full",
+  height = 32,
+  onDark = false,
+  className = "",
+}: PrysmianLogoProps) {
   if (variant === "mark") {
+    const clipWidth = Math.round(height * FULL_ASPECT * MARK_VIEWPORT_RATIO);
     return (
-      <svg
-        width={height}
-        height={height}
-        viewBox="0 0 40 40"
-        xmlns="http://www.w3.org/2000/svg"
-        className={className}
+      <span
+        className={`inline-block overflow-hidden ${className}`}
+        style={{ width: clipWidth, height }}
         aria-label="Prysmian"
       >
-        <defs>
-          <linearGradient id="prysmianGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00875A" />
-            <stop offset="100%" stopColor="#00B589" />
-          </linearGradient>
-        </defs>
-        <circle cx="20" cy="20" r="18" fill="url(#prysmianGradient)" />
-        <path
-          d="M 14 14 Q 20 20 26 14 Q 20 14 14 20 Q 20 26 26 20 Q 20 20 14 26"
-          fill="none"
-          stroke="#FFFFFF"
-          strokeWidth="2.5"
-          strokeLinecap="round"
+        <img
+          src="/prysmian-logo.png"
+          alt="Prysmian"
+          style={{ height, width: "auto", maxWidth: "none" }}
         />
-      </svg>
+      </span>
     );
   }
+  const wrapperClasses = onDark
+    ? "inline-flex items-center bg-white rounded-md px-2 py-1"
+    : "inline-flex items-center";
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      <svg
-        width={height}
-        height={height}
-        viewBox="0 0 40 40"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label="Prysmian"
-      >
-        <defs>
-          <linearGradient id="prysmianGradientFull" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00875A" />
-            <stop offset="100%" stopColor="#00B589" />
-          </linearGradient>
-        </defs>
-        <circle cx="20" cy="20" r="18" fill="url(#prysmianGradientFull)" />
-        <path
-          d="M 14 14 Q 20 20 26 14 Q 20 14 14 20 Q 20 26 26 20 Q 20 20 14 26"
-          fill="none"
-          stroke="#FFFFFF"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-      </svg>
-      <span className="font-semibold tracking-tight text-white text-lg lowercase">prysmian</span>
-    </div>
+    <span className={`${wrapperClasses} ${className}`} aria-label="Prysmian">
+      <img src="/prysmian-logo.png" alt="Prysmian" style={{ height, width: "auto" }} />
+    </span>
   );
 }
