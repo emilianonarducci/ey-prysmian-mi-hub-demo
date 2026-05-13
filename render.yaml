@@ -1,0 +1,65 @@
+# Render.com blueprint for EY Prysmian MI Hub demo
+#
+# DEPLOY STEPS (one-time):
+#   1. Push this repo to GitHub.
+#   2. On Render → "New +" → "Blueprint" → connect this repo.
+#   3. Click "Apply" — Render provisions DB + 2 web services.
+#   4. In the `mi-hub-api` service: set `ANTHROPIC_API_KEY` env var manually.
+#   5. After `mi-hub-api` is live, copy its URL and set it as `VITE_API_BASE`
+#      on `mi-hub-web` (Settings → Environment), then trigger a manual redeploy
+#      so Vite rebuilds with the right backend URL.
+#   6. Done — open the mi-hub-web URL.
+#
+# NOTES:
+#   - Free plan: services sleep after 15min idle; first request after sleep
+#     takes ~30s to wake (cold start). Pin to Starter ($7/mo each) for demos.
+#   - The DB seed runs automatically on first api boot via scripts/init_db.py.
+
+databases:
+  - name: mi-hub-db
+    plan: free
+    databaseName: mi_hub
+    user: mi_hub
+    postgresMajorVersion: 16
+
+services:
+  # ── Backend API (FastAPI) ─────────────────────────────────────
+  - type: web
+    name: mi-hub-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend/Dockerfile.prod
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mi-hub-db
+          property: connectionString
+      - key: ANTHROPIC_API_KEY
+        sync: false                # SET MANUALLY in Render dashboard
+      - key: LLM_MODEL_PRIMARY
+        value: claude-sonnet-4-6
+      - key: LLM_MODEL_FALLBACK
+        value: claude-haiku-4-5-20251001
+      - key: EMBEDDING_MODEL
+        value: voyage-3-large
+      - key: DEMO_MODE
+        value: cache_first
+      - key: CORS_ORIGINS
+        sync: false                # set to https://mi-hub-web.onrender.com after web deploys
+
+  # ── Frontend (Vite + nginx) ───────────────────────────────────
+  - type: web
+    name: mi-hub-web
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    autoDeploy: true
+    envVars:
+      - key: VITE_API_BASE
+        sync: false                # set to https://mi-hub-api.onrender.com after api deploys

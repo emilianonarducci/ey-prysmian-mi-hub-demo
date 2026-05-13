@@ -1,12 +1,17 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api import health, projects, news, trends, countries, agents, evidence, search, review, alerts
 
 app = FastAPI(title="EY Prysmian MI Hub Demo API", version="0.1.0")
 
+# CORS: allow localhost (any port for dev) + Render domains + any explicit CORS_ORIGINS env var
+extra_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"http://localhost:\d+",
+    allow_origins=extra_origins,
+    allow_origin_regex=r"^https?://(localhost(:\d+)?|.*\.onrender\.com|.*\.render\.com)$",
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=False,
