@@ -1,0 +1,16 @@
+name,owner,country,project_type,capex_estimate_musd,capacity_mw,start_year,end_year,cable_demand_estimate_km,status,source_url
+Copper Frontier Zambia,Anglo American,Zambia,copper,4500,250,2024,2028,420,planning,https://www.mining.com/example-1
+Lithium Triangle Argentina,Albemarle,Argentina,lithium,2800,180,2025,2029,310,construction,https://www.mining.com/example-2
+Critical Minerals Cobalt Project,Glencore,DRC,cobalt,1200,90,2023,2027,180,operational,https://www.mining.com/example-3
+Andina Copper Expansion,Codelco,Chile,copper,3200,200,2025,2030,370,planning,https://www.mining.com/example-4
+Iron Ore Western Pilbara Phase 2,Rio Tinto,Australia,iron_ore,1800,140,2024,2027,240,construction,https://www.mining.com/example-5
+Nickel Sulphide Indonesia,Vale,Indonesia,nickel,2100,160,2025,2029,290,planning,https://www.mining.com/example-6
+Critical Minerals Rare Earth Project,Lynas,Australia,rare_earth,900,70,2024,2026,130,construction,https://www.mining.com/example-7
+Copper Smelting Northern Peru,Southern Copper,Peru,copper,2600,170,2026,2030,320,planning,https://www.mining.com/example-8
+Lithium Brine Bolivia,YLB,Bolivia,lithium,1500,110,2025,2028,200,construction,https://www.mining.com/example-9
+Mining Power Substation Botswana,De Beers,Botswana,diamond,650,55,2024,2026,100,construction,https://www.mining.com/example-10
+Critical Minerals Tungsten Vietnam,Masan Resources,Vietnam,tungsten,720,60,2025,2028,110,planning,https://www.mining.com/example-11
+Copper Mongolia Oyu Tolgoi Phase 3,Rio Tinto,Mongolia,copper,5200,300,2026,2031,470,planning,https://www.mining.com/example-12
+Critical Minerals Graphite Madagascar,NextSource Materials,Madagascar,graphite,580,45,2024,2027,85,construction,https://www.mining.com/example-13
+Iron Ore Brazil Carajas Expansion,Vale,Brazil,iron_ore,2400,180,2025,2029,340,planning,https://www.mining.com/example-14
+Copper Recycling Hub Italy,Aurubis,Italy,copper,800,65,2024,2026,120,construction,https://www.mining.com/example-15

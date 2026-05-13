@@ -1,0 +1,27 @@
+metric,customer_or_product,value_eur,detail
+sales_by_customer,Customer A,150000,
+sales_by_customer,Customer B,125000,
+sales_by_customer,Customer C,105000,
+sales_by_customer,Customer D,95000,
+sales_by_customer,Customer E,70000,
+sales_by_customer,Customer F,55000,
+sales_by_customer,Customer G,30000,
+sales_by_customer,Customer H,20000,
+sales_by_product,Product 1,190000,
+sales_by_product,Product 2,140000,
+sales_by_product,Product 3,105000,
+sales_by_product,Product 4,85000,
+sales_by_product,Product 5,65000,
+sales_by_product,Product 6,45000,
+sales_by_product,Product 7,35000,
+sales_by_product,Product 8,20000,
+competitor,Competitor A,,Tier 1
+competitor,Competitor B,,Tier 1
+competitor,Competitor C,,Tier 2
+competitor,Competitor D,,Tier 2
+competitor,Competitor E,,Tier 3
+market_value_by_customer,Customer D,320000,
+market_value_by_customer,Customer A,280000,
+market_value_by_customer,Customer C,250000,
+market_value_by_customer,Customer B,180000,
+market_value_by_customer,Customer E,160000,

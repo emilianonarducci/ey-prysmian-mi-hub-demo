@@ -1,0 +1,99 @@
+# Sources catalogued from client clarification email
+# Demo activates a subset; remaining are Phase 1 integration backlog
+sources:
+  - id: mining_com
+    name: mining.com
+    url: https://www.mining.com/feed/
+    type: rss
+    category: both
+    agent_target: [news_finder, mining_specialist]
+    integration_status: demo_active
+    tos_status: assumed_compliant_demo_only
+  - id: europacable_news
+    name: EuropaCable News
+    url: https://www.europacable.eu/feed/
+    type: rss
+    category: generic
+    agent_target: [news_finder]
+    integration_status: demo_active
+    tos_status: assumed_compliant_demo_only
+  - id: iea_news
+    name: IEA News
+    url: https://www.iea.org/news/feed
+    type: rss
+    category: generic
+    agent_target: [news_finder]
+    integration_status: demo_active
+    tos_status: confirm_phase_0
+  - id: dcd_europe
+    name: DCD News Europe
+    url: https://www.datacenterdynamics.com/en/news/europe/feed/
+    type: rss
+    category: generic
+    agent_target: [news_finder]
+    integration_status: demo_active
+    tos_status: confirm_phase_0
+  - id: westmetall_copper
+    name: Westmetall LME Copper
+    url: https://www.westmetall.com/en/markdaten.php
+    type: csv_daily
+    category: specialist
+    agent_target: [mining_specialist]
+    integration_status: demo_active
+    tos_status: verify_redistribution
+  - id: usgs_commodity_summaries
+    name: USGS Mineral Commodity Summaries
+    url: https://apps.usgs.gov/critical-minerals/mineral-commodities-2026.html
+    type: pdf_seed
+    category: specialist
+    agent_target: [mining_specialist]
+    integration_status: demo_active_seed_only
+    tos_status: public_domain_us_gov
+  - id: emj_mining_projects
+    name: E&MJ Global Mining Project Spending Outlook
+    url: https://www.e-mj.com/features/2025-global-mining-project-spending-outlook/
+    type: pdf_seed
+    category: specialist
+    agent_target: [mining_specialist]
+    integration_status: demo_active_seed_only
+    tos_status: confirm_phase_0
+  - id: cru_thought_leadership
+    name: CRU Thought Leadership
+    url: https://www.crugroup.com/en/insights-and-analysis/thought-leadership/
+    type: html_scraping
+    category: generic
+    agent_target: [news_finder]
+    integration_status: phase_1
+    tos_status: subscription_required
+  - id: pwc_mine_2025
+    name: PwC Mine 2025
+    url: https://www.pwc.com/gx/en/industries/energy-utilities-resources/mining/mine.html
+    type: pdf_seed
+    category: specialist
+    agent_target: [mining_specialist]
+    integration_status: phase_1
+    tos_status: public_report_excerpts_only
+  - id: ey_mining_metals_risks
+    name: EY Mining/Metals Risks and Opportunities
+    url: https://www.ey.com/en_gl/insights/mining-metals/risks-opportunities
+    type: html_scraping
+    category: specialist
+    agent_target: [mining_specialist]
+    integration_status: phase_1
+    tos_status: ey_internal_use_friendly
+  - id: imf_commodity_prices
+    name: IMF Commodity Prices
+    url: https://www.imf.org/en/research/commodity-prices
+    type: api
+    category: specialist
+    agent_target: [mining_specialist]
+    integration_status: phase_1
+    tos_status: imf_public_data_terms
+  - id: iea_critical_minerals
+    name: IEA Global Critical Minerals Outlook 2025
+    url: https://www.iea.org/reports/global-critical-minerals-outlook-2025/executive-summary
+    type: pdf_html
+    category: specialist
+    agent_target: [mining_specialist]
+    integration_status: phase_1
+    tos_status: iea_publication_terms
