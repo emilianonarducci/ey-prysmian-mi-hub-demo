@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useProjects } from "@/lib/queries";
 import EvidenceMetadataViewer from "@/components/EvidenceMetadataViewer";
+import AIInsightCard from "@/components/AIInsightCard";
 
 export default function ProjectListPage() {
   const [filters, setFilters] = useState<Record<string, string>>({});
@@ -9,6 +10,14 @@ export default function ProjectListPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Project List</h1>
+      <AIInsightCard
+        title="AI Insight"
+        body={
+          data
+            ? `${data.total} mining projects in the dataset. ${data.items.filter((p) => p.data_source_label === "live").length} added by Mining Cable Specialist agent (last refresh). Total estimated cable demand: ${data.items.reduce((sum, p) => sum + Number(p.cable_demand_estimate_km ?? 0), 0).toLocaleString()} km.`
+            : "Loading insights..."
+        }
+      />
       <div className="flex gap-6">
         <aside className="w-56 shrink-0">
           <h2 className="text-sm font-semibold mb-2">Filters</h2>
