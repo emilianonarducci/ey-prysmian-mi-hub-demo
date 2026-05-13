@@ -2,4 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-body { @apply font-sans antialiased; }
+@layer base {
+  html { font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+  body {
+    @apply font-sans antialiased text-ink bg-surface-muted;
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1, h2, h3, h4 { @apply font-display tracking-tight; }
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-xl border border-line shadow-card;
+  }
+  .card-hover {
+    @apply transition-shadow hover:shadow-card-hover hover:border-line-strong;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium;
+  }
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-prysmian-green focus-visible:ring-offset-2;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg bg-prysmian-green hover:bg-prysmian-green-dark text-white font-medium text-sm transition-colors focus-ring;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-surface-subtle font-medium text-sm transition-colors focus-ring;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border border-line hover:border-line-strong bg-white text-ink-muted hover:text-ink font-medium text-sm transition-colors focus-ring;
+  }
+  .kbd {
+    @apply inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded border border-line bg-white text-[10.5px] font-mono text-ink-subtle;
+  }
+}
+
+/* Scrollbar polish */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D4D9E3; border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: #B9C0CF; background-clip: padding-box; border: 2px solid transparent; }
