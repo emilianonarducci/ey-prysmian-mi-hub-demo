@@ -147,7 +147,7 @@ export default function ProjectListPage() {
                 {filtered.map((p) => (
                   <tr key={p.id} className="border-b border-line-subtle hover:bg-surface-muted transition-colors">
                     <td className="px-4 py-3">
-                      <Link to={`/projects/${p.id}`} className="flex items-center gap-2 group" onClick={(e) => { e.preventDefault(); p.evidence_id && setEvidenceId(p.evidence_id); }}>
+                      <Link to={`/projects/${p.id}`} className="flex items-center gap-2 group">
                         <Building2 size={14} className="text-ink-faint" />
                         <div>
                           <div className="font-medium text-ink group-hover:text-prysmian-green flex items-center gap-1.5">

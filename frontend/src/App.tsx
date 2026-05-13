@@ -7,6 +7,8 @@ import ProjectListPage from "./pages/ProjectListPage";
 import MarketTrendsPage from "./pages/MarketTrendsPage";
 import NewsReportsPage from "./pages/NewsReportsPage";
 import LoginPage from "./pages/LoginPage";
+import ComparePage from "./pages/ComparePage";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 
 const qc = new QueryClient();
 
@@ -38,6 +40,8 @@ export default function App() {
             <Route path="/trends" element={<MarketTrendsPage />} />
             <Route path="/news" element={<NewsReportsPage />} />
             <Route path="/projects" element={<ProjectListPage />} />
+            <Route path="/projects/:id" element={<ProjectDetailPage />} />
+            <Route path="/compare" element={<ComparePage />} />
           </Route>
         </Routes>
       </BrowserRouter>

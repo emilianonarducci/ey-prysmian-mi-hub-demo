@@ -7,7 +7,7 @@ import { useGlobalSearch } from "@/lib/queries";
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/country/italy", label: "Country ID", icon: Globe, match: "/country" },
-  { to: "/compare", label: "Compare", icon: GitCompare, soon: true },
+  { to: "/compare", label: "Compare", icon: GitCompare },
   { to: "/trends", label: "Market Trends", icon: LineChart },
   { to: "/news", label: "News & Reports", icon: Newspaper },
   { to: "/projects", label: "Projects", icon: ListChecks },
