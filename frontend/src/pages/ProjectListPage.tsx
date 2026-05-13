@@ -2,14 +2,31 @@ import { useState } from "react";
 import { useProjects } from "@/lib/queries";
 import EvidenceMetadataViewer from "@/components/EvidenceMetadataViewer";
 import AIInsightCard from "@/components/AIInsightCard";
+import api from "@/lib/api";
+import { RefreshCw } from "lucide-react";
 
 export default function ProjectListPage() {
   const [filters, setFilters] = useState<Record<string, string>>({});
-  const { data, isLoading } = useProjects(filters);
+  const { data, isLoading, refetch } = useProjects(filters);
   const [evidenceId, setEvidenceId] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  async function refresh() {
+    setRefreshing(true);
+    try {
+      await api.post("/agents/mining_cable_specialist/run", { bounded: true, max_items: 3, timeout_seconds: 30 });
+      setTimeout(() => { refetch(); setRefreshing(false); }, 8000);
+    } catch { setRefreshing(false); }
+  }
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Project List</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Project List</h1>
+        <button onClick={refresh} disabled={refreshing}
+          className="px-3 py-2 bg-ey-navy text-white rounded text-sm flex items-center gap-2">
+          <RefreshCw size={14} className={refreshing ? "animate-spin" : ""} />
+          {refreshing ? "Refreshing..." : "Refresh from sources"}
+        </button>
+      </div>
       <AIInsightCard
         title="AI Insight"
         body={
