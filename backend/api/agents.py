@@ -1,24 +1,38 @@
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import select, text
 from uuid import UUID
 from backend.db.connection import get_db
 from backend.schemas.agents import AgentRunRequest, AgentRunOut
+from agents.news_finder import NewsFinderAgent
+from agents.mining_cable_specialist import MiningCableSpecialistAgent
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 
-AGENT_REGISTRY = {}  # populated in Day 2 by agents/__init__.py
+REGISTRY = {
+    "news_finder": NewsFinderAgent,
+    "mining_cable_specialist": MiningCableSpecialistAgent,
+}
 
-@router.post("/{agent_name}/run", response_model=dict)
+def _run_agent_bg(agent_class, params: AgentRunRequest):
+    agent = agent_class()
+    try:
+        agent.run(bounded=params.bounded, max_items=params.max_items, timeout_seconds=params.timeout_seconds)
+    except Exception as e:
+        print(f"[agent {agent.name}] failed: {e}")
+
+@router.post("/{agent_name}/run")
 def trigger_agent(agent_name: str, params: AgentRunRequest, bg: BackgroundTasks, db: Session = Depends(get_db)):
-    if agent_name not in AGENT_REGISTRY:
+    if agent_name not in REGISTRY:
         raise HTTPException(404, f"Agent {agent_name} not registered")
-    agent = AGENT_REGISTRY[agent_name]
-    run_id = agent.dispatch(bg, params)
-    return {"run_id": str(run_id), "status": "running"}
+    bg.add_task(_run_agent_bg, REGISTRY[agent_name], params)
+    return {"agent": agent_name, "status": "running"}
 
-@router.get("/runs", response_model=list[AgentRunOut])
+@router.get("/runs")
 def list_runs(db: Session = Depends(get_db)):
-    from backend.db.models import EvidenceMetadata
-    # placeholder: query audit.agent_runs table once table exists
-    return []
+    rows = db.execute(text("""
+        SELECT id, agent_name, agent_version, status, started_at, completed_at,
+               latency_ms, tokens_input, tokens_output, error_message
+        FROM audit.agent_runs ORDER BY started_at DESC LIMIT 50
+    """)).all()
+    return [dict(r._mapping) for r in rows]
