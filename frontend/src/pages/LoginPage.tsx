@@ -34,7 +34,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex relative">
+      <div className="absolute top-6 right-6 z-20">
+        <PrysmianLogo variant="full" height={40} />
+      </div>
       {/* Left: hero */}
       <div
         className="hidden lg:flex flex-1 relative overflow-hidden"
@@ -48,7 +51,7 @@ export default function LoginPage() {
       >
         <div className="absolute inset-0 bg-gradient-to-br from-ey-navy/85 via-ey-navy/70 to-prysmian-green/40" />
         <div className="relative z-10 flex flex-col justify-between p-12 text-white">
-          <PrysmianLogo variant="full" height={36} onDark className="self-end" />
+          <div />
           <div className="max-w-lg">
             <h1 className="text-4xl font-bold leading-tight mb-4">
               Market Intelligence Hub
@@ -72,10 +75,7 @@ export default function LoginPage() {
       {/* Right: form */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 bg-white">
         <div className="w-full max-w-md">
-          <div className="lg:hidden mb-8 flex justify-center">
-            <PrysmianLogo variant="full" height={40} />
-          </div>
-          <h2 className="text-2xl font-bold text-ey-navy mb-2">Sign in</h2>
+          <h2 className="text-2xl font-bold text-ey-navy mb-2 mt-12">Sign in</h2>
           <p className="text-sm text-gray-600 mb-6">
             Access your Marketing Intelligence Hub
           </p>
