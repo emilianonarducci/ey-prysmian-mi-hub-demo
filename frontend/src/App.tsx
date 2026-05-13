@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Layout from "./components/Layout";
 import LandingPage from "./pages/LandingPage";
@@ -6,15 +6,32 @@ import CountryIdPage from "./pages/CountryIdPage";
 import ProjectListPage from "./pages/ProjectListPage";
 import MarketTrendsPage from "./pages/MarketTrendsPage";
 import NewsReportsPage from "./pages/NewsReportsPage";
+import LoginPage from "./pages/LoginPage";
 
 const qc = new QueryClient();
+
+function RequireAuth({ children }: { children: React.ReactNode }) {
+  const loc = useLocation();
+  const user = sessionStorage.getItem("mi_hub_user");
+  if (!user) {
+    return <Navigate to="/login" state={{ from: loc }} replace />;
+  }
+  return <>{children}</>;
+}
 
 export default function App() {
   return (
     <QueryClientProvider client={qc}>
       <BrowserRouter>
         <Routes>
-          <Route element={<Layout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            element={
+              <RequireAuth>
+                <Layout />
+              </RequireAuth>
+            }
+          >
             <Route path="/" element={<LandingPage />} />
             <Route path="/country/:id" element={<CountryIdPage />} />
             <Route path="/country" element={<Navigate to="/country/italy" replace />} />
