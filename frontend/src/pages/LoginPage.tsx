@@ -1,6 +1,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PrysmianLogo from "@/components/PrysmianLogo";
+import { api } from "@/lib/api";
+
+const DEMO_EMAIL = "ey.demo@prysmian.com";
+const DEMO_PASSWORD = "EYDemo2026!";
+const WARMUP_TIMEOUT_MS = 90000;
+
+async function warmupBackend(onProgress: (msg: string) => void): Promise<void> {
+  const start = Date.now();
+  let attempt = 0;
+  while (Date.now() - start < WARMUP_TIMEOUT_MS) {
+    attempt++;
+    try {
+      const r = await api.get("/health", { timeout: 8000 });
+      if (r.status === 200) return;
+    } catch {
+      const elapsed = Math.floor((Date.now() - start) / 1000);
+      onProgress(`Connecting to backend... (${elapsed}s)`);
+      await new Promise((res) => setTimeout(res, 2000));
+    }
+  }
+  throw new Error("Backend did not respond in time. Please retry.");
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -8,6 +30,7 @@ export default function LoginPage() {
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState<string | null>(null);
   const nav = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -17,20 +40,25 @@ export default function LoginPage() {
       setError("Email and password are required");
       return;
     }
-    if (!email.includes("@")) {
-      setError("Please enter a valid email address");
+    if (email.trim().toLowerCase() !== DEMO_EMAIL || password !== DEMO_PASSWORD) {
+      setError("Invalid credentials");
       return;
     }
     setLoading(true);
-    // Simulated auth — for demo only. Any non-empty credentials accepted.
-    // In Phase 1 this calls a real auth provider (Azure Entra ID / SSO).
-    await new Promise((r) => setTimeout(r, 600));
-    sessionStorage.setItem("mi_hub_user", email);
-    if (remember) {
-      localStorage.setItem("mi_hub_user_remembered", email);
+    setStatusMsg("Signing in...");
+    try {
+      await warmupBackend((msg) => setStatusMsg(msg));
+      sessionStorage.setItem("mi_hub_user", email);
+      if (remember) {
+        localStorage.setItem("mi_hub_user_remembered", email);
+      }
+      nav("/", { replace: true });
+    } catch (err: any) {
+      setError(err?.message || "Login failed. Please retry.");
+    } finally {
+      setLoading(false);
+      setStatusMsg(null);
     }
-    setLoading(false);
-    nav("/", { replace: true });
   }
 
   return (
@@ -132,12 +160,14 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-prysmian-green hover:bg-prysmian-green-dark text-white font-semibold py-2.5 rounded transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? (statusMsg || "Signing in...") : "Sign in"}
             </button>
+            {loading && statusMsg && (
+              <div className="text-xs text-gray-500 text-center">
+                First sign-in of the day may take up to 60 seconds while the service wakes up.
+              </div>
+            )}
           </form>
-          <div className="mt-6 text-center text-xs text-gray-500">
-            Demo build · any credentials are accepted · production uses Azure Entra ID SSO
-          </div>
         </div>
       </div>
     </div>
