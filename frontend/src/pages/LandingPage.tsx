@@ -139,7 +139,7 @@ export default function LandingPage() {
               <Badge tone="green" dot>Live · AI agents active</Badge>
               {buMeta && <Badge tone="navy" dot>BU · {buMeta.name}</Badge>}
               <h1 className="mt-2.5 text-2xl md:text-3xl font-bold tracking-tight">
-                {greet}{firstName ? `, ${capitalize(firstName)}` : ""}
+                Welcome Prysmian
               </h1>
               <p className="mt-1.5 text-white/70 max-w-2xl text-sm">
                 {buContent?.subhead ?? "Here's what's moving in cable demand, mining commodities and EU energy markets today."}

@@ -1,0 +1,80 @@
+1
+00:00:00,000 --> 00:00:09,800
+EY Prysmian Marketing Intelligence Hub — an AI-powered platform for cable industry intelligence.
+
+2
+00:00:09,900 --> 00:00:20,405
+Secure sign-in. Phase one integrates Azure Entra ID for single sign-on.
+
+3
+00:00:20,506 --> 00:00:31,325
+Admin dashboard — cross-functional view of all business units.
+
+4
+00:00:31,425 --> 00:00:39,527
+View-as selector — preview the dashboard as any business unit.
+
+5
+00:00:39,627 --> 00:00:48,278
+Mining lens — copper price, active pipeline, cable demand.
+
+6
+00:00:48,378 --> 00:00:58,074
+Automotive lens — EV charging, EU AFIR corridors, OEM HV harness.
+
+7
+00:00:58,174 --> 00:01:11,475
+Alerts inbox — KPI breaches, news triggers, competitor signals.
+
+8
+00:01:11,575 --> 00:01:26,390
+Alert subscriptions — push to Microsoft Teams, Slack, email or in-app.
+
+9
+00:01:26,490 --> 00:01:41,489
+Review Queue — AI-drafted items awaiting human validation.
+
+10
+00:01:41,589 --> 00:01:53,270
+Accept · Edit · Reject — with structured feedback to improve the agent.
+
+11
+00:01:53,370 --> 00:02:05,731
+Agents page — performance metrics and feedback score per agent.
+
+12
+00:02:05,831 --> 00:02:16,284
+BU-scoped dashboard for an I and C user — 60-day playbook included.
+
+13
+00:02:16,384 --> 00:02:27,543
+Country ID — Italy. AI insight on share of wallet and white space.
+
+14
+00:02:27,643 --> 00:02:38,122
+Four quadrants — sales, products, competitors, share-of-wallet killer view.
+
+15
+00:02:38,222 --> 00:02:47,814
+Drill-down — Salesforce-style account record with opportunities and contacts.
+
+16
+00:02:47,914 --> 00:02:59,464
+Business Unit ID — symmetric view with country as filter.
+
+17
+00:02:59,564 --> 00:03:10,148
+Market Trends — Cable Demand Nowcast composite index.
+
+18
+00:03:10,248 --> 00:03:22,452
+Base, Up, Down scenarios — and the policy & incentive impact tracker.
+
+19
+00:03:22,552 --> 00:03:35,199
+Projects pipeline — 6 KPIs including green share and hyperscaler exposure.
+
+20
+00:03:35,299 --> 00:03:49,828
+News & Reports BU-specific feeds and specialized industry sources. AI-powered, evidence-backed, BU-aware.
+
