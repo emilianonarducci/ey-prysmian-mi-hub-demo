@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge, SectionTitle } from "@/components/ui/Badge";
+import { BUSINESS_UNITS as BU_LIST } from "@/lib/bus";
 
 const COUNTRIES = [
   { id: "italy", name: "Italy", flag: "🇮🇹", hasData: true },
@@ -18,7 +19,7 @@ const COUNTRIES = [
   { id: "netherlands", name: "Netherlands", flag: "🇳🇱", hasData: false },
 ];
 
-const BUSINESS_UNITS = ["I&C", "Power Grid", "Digital Solutions", "Railway", "Wind onshore", "Solar"];
+const BUSINESS_UNITS = BU_LIST.map((b) => b.short);
 
 export default function CountryIdPage() {
   const { id = "italy" } = useParams<{ id: string }>();

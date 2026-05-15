@@ -194,7 +194,7 @@ function SubscriptionsPanel({ onClose }: { onClose: () => void }) {
     update.mutate({ [field]: list.includes(v) ? list.filter((x) => x !== v) : [...list, v] } as any);
   }
 
-  const BUs = ["transmission", "grid", "renewables", "telecom", "automotive"];
+  const BUs = ["I&C", "Elevators", "Automotive", "Mining", "Renewable", "Fiber", "Connectivity", "Power Grid", "Submarine", "B&C"];
   const COUNTRIES = ["Italy", "France", "Germany", "Spain", "Netherlands", "UK"];
   const TOPICS = ["copper", "permits", "new_projects", "competitor_moves", "EV_demand", "subsea"];
 

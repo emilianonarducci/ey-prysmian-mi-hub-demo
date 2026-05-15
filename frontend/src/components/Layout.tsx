@@ -1,22 +1,25 @@
 import { Link, Outlet, useLocation, useNavigate, NavLink } from "react-router-dom";
-import { LayoutDashboard, Globe, LineChart, Newspaper, ListChecks, LogOut, Search, Bell, Sparkles, GitCompare, Pickaxe, Inbox, Bot, BellRing } from "lucide-react";
+import { LayoutDashboard, Globe, LineChart, Newspaper, ListChecks, LogOut, Search, Bell, Sparkles, GitCompare, Pickaxe, Inbox, Bot, BellRing, Briefcase, Shield } from "lucide-react";
+import { currentSession } from "@/lib/users";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
 import PrysmianLogo from "./PrysmianLogo";
 import { useGlobalSearch } from "@/lib/queries";
 
-type NavItem = { to: string; label: string; icon: any; end?: boolean; match?: string; badgeKey?: "review" | "alerts"; group?: string };
+type NavItem = { to: string; label: string; icon: any; end?: boolean; match?: string; badgeKey?: "review" | "alerts"; group?: string; adminOnly?: boolean };
 const NAV: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true, group: "Workspace" },
   { to: "/review", label: "Review queue", icon: Inbox, badgeKey: "review", group: "Workspace" },
   { to: "/alerts", label: "Alerts", icon: BellRing, badgeKey: "alerts", group: "Workspace" },
   { to: "/agents", label: "AI Agents", icon: Bot, group: "Workspace" },
+  { to: "/bu/ic", label: "Business Unit ID", icon: Briefcase, match: "/bu", group: "Intelligence" },
   { to: "/country/italy", label: "Country ID", icon: Globe, match: "/country", group: "Intelligence" },
   { to: "/compare", label: "Compare", icon: GitCompare, group: "Intelligence" },
   { to: "/trends", label: "Market Trends", icon: LineChart, group: "Intelligence" },
   { to: "/news", label: "News & Reports", icon: Newspaper, group: "Intelligence" },
   { to: "/projects", label: "Projects", icon: ListChecks, group: "Intelligence" },
+  { to: "/admin", label: "Administration", icon: Shield, group: "Admin", adminOnly: true },
 ];
 
 export default function Layout() {
@@ -75,11 +78,14 @@ export default function Layout() {
           </Link>
         </div>
         <nav className="p-3 flex-1 overflow-y-auto">
-          {(["Workspace", "Intelligence"] as const).map((group) => (
+          {(["Workspace", "Intelligence", "Admin"] as const).map((group) => {
+            const items = NAV.filter((n) => n.group === group && (!n.adminOnly || currentSession().role === "admin"));
+            if (items.length === 0) return null;
+            return (
             <div key={group} className="mb-3">
               <div className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-ink-faint">{group}</div>
               <div className="space-y-0.5">
-                {NAV.filter((n) => n.group === group).map((n) => {
+                {items.map((n) => {
                   const active = n.end
                     ? loc.pathname === n.to
                     : (n.match ? loc.pathname.startsWith(n.match) : loc.pathname.startsWith(n.to));
@@ -109,7 +115,8 @@ export default function Layout() {
                 })}
               </div>
             </div>
-          ))}
+            );
+          })}
         </nav>
         <div className="p-3 border-t border-line">
           <div className="px-3 py-2 rounded-lg bg-surface-muted flex items-center gap-2.5">

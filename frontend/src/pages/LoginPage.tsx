@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PrysmianLogo from "@/components/PrysmianLogo";
 import { api } from "@/lib/api";
+import { authenticate } from "@/lib/users";
 
-const DEMO_EMAIL = "ey.demo@prysmian.com";
-const DEMO_PASSWORD = "EYDemo2026!";
 const WARMUP_TIMEOUT_MS = 90000;
 
 async function warmupBackend(onProgress: (msg: string) => void): Promise<void> {
@@ -40,7 +39,8 @@ export default function LoginPage() {
       setError("Email and password are required");
       return;
     }
-    if (email.trim().toLowerCase() !== DEMO_EMAIL || password !== DEMO_PASSWORD) {
+    const user = authenticate(email, password);
+    if (!user) {
       setError("Invalid credentials");
       return;
     }
@@ -48,9 +48,13 @@ export default function LoginPage() {
     setStatusMsg("Signing in...");
     try {
       await warmupBackend((msg) => setStatusMsg(msg));
-      sessionStorage.setItem("mi_hub_user", email);
+      sessionStorage.setItem("mi_hub_user", user.email);
+      sessionStorage.setItem("mi_hub_role", user.role);
+      if (user.buId) sessionStorage.setItem("mi_hub_bu", user.buId);
+      else sessionStorage.removeItem("mi_hub_bu");
+      if (user.displayName) sessionStorage.setItem("mi_hub_name", user.displayName);
       if (remember) {
-        localStorage.setItem("mi_hub_user_remembered", email);
+        localStorage.setItem("mi_hub_user_remembered", user.email);
       }
       nav("/", { replace: true });
     } catch (err: any) {

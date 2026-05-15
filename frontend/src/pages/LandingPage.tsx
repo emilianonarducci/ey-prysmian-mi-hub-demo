@@ -7,6 +7,10 @@ import { useProjects, useNews } from "@/lib/queries";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Stat } from "@/components/ui/Stat";
 import { Badge, SectionTitle } from "@/components/ui/Badge";
+import { currentSession } from "@/lib/users";
+import { getBuContent } from "@/lib/bu-content";
+import { findBu } from "@/lib/bus";
+import { buNewsFor } from "@/lib/bu-news";
 
 type Tab = "briefing" | "activity" | "explore";
 
@@ -17,10 +21,34 @@ export default function LandingPage() {
   const userEmail = sessionStorage.getItem("mi_hub_user") || "";
   const firstName = userEmail.split("@")[0].split(".")[0];
   const greet = greeting();
+  const session = currentSession();
+  // Admins can preview the dashboard as different BUs via the BU tab bar below.
+  const [viewAsBu, setViewAsBu] = useState<string | null>(null);
+  const effectiveBuId = session.role === "admin" ? viewAsBu : session.buId;
+  const buMeta = effectiveBuId ? findBu(effectiveBuId) : null;
+  const buContent = getBuContent(effectiveBuId);
+  const ADMIN_BU_TABS = ["ic", "mining", "automotive"]; // BUs with rich dashboard content
 
   const projectsTotal = projects.data?.total ?? 0;
-  const newsCount = news.data?.length ?? 0;
-  const recentNews = (news.data ?? []).slice(0, 5);
+  // BU-aware news: when a BU is active, surface its curated headlines; otherwise fall back to API news.
+  const buNewsItems = effectiveBuId ? buNewsFor(effectiveBuId) : [];
+  const recentNews = effectiveBuId && buNewsItems.length > 0
+    ? buNewsItems.slice(0, 5).map((n) => ({
+        id: n.id,
+        source: n.source,
+        url: n.url,
+        title: n.title,
+        summary: n.summary,
+        countries: n.countries ?? [],
+        published_at: n.published_at,
+        relevance_score: n.relevance_score,
+        segments: n.tags ?? null,
+        curated_at: n.published_at,
+        evidence_id: null,
+        data_source_label: "curated",
+      }))
+    : (news.data ?? []).slice(0, 5);
+  const newsCount = effectiveBuId ? buNewsItems.length : (news.data?.length ?? 0);
   const flaggedProjects = (projects.data?.items ?? []).filter((p) => p.flagged_of_interest).slice(0, 4);
 
   const reviewStats = useQuery({
@@ -43,6 +71,24 @@ export default function LandingPage() {
 
   return (
     <div className="space-y-5 max-w-[1400px]">
+      {/* Admin: BU tab bar (preview dashboard as different BUs) */}
+      {session.role === "admin" && (
+        <div className="flex items-center gap-2 flex-wrap p-1 rounded-xl bg-surface-subtle">
+          <span className="text-[11px] uppercase tracking-wider text-ink-subtle font-medium pl-2 pr-1">View as</span>
+          <BuTab active={viewAsBu === null} onClick={() => setViewAsBu(null)} label="All BUs" hint="cross-functional admin view" />
+          {ADMIN_BU_TABS.map((id) => {
+            const b = findBu(id);
+            if (!b) return null;
+            return <BuTab key={id} active={viewAsBu === id} onClick={() => setViewAsBu(id)} label={b.name} hint={b.short} />;
+          })}
+          {viewAsBu && (
+            <span className="ml-auto chip bg-prysmian-green/10 text-prysmian-green pr-1">
+              Previewing · {buMeta?.short}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Tab bar */}
       <div className="flex items-center gap-1.5 border-b border-line">
         {(
@@ -91,18 +137,19 @@ export default function LandingPage() {
             <div className="absolute -right-32 -top-32 w-96 h-96 rounded-full bg-prysmian-green/20 blur-3xl" />
             <div className="relative">
               <Badge tone="green" dot>Live · AI agents active</Badge>
+              {buMeta && <Badge tone="navy" dot>BU · {buMeta.name}</Badge>}
               <h1 className="mt-2.5 text-2xl md:text-3xl font-bold tracking-tight">
                 {greet}{firstName ? `, ${capitalize(firstName)}` : ""}
               </h1>
               <p className="mt-1.5 text-white/70 max-w-2xl text-sm">
-                Here's what's moving in cable demand, mining commodities and EU energy markets today.
+                {buContent?.subhead ?? "Here's what's moving in cable demand, mining commodities and EU energy markets today."}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link to="/trends" className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-prysmian-green hover:bg-prysmian-green-light text-white font-medium text-sm transition-colors">
-                  <TrendingUp size={14} /> Today's market brief
+                <Link to={buContent?.primaryCta.to ?? "/trends"} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-prysmian-green hover:bg-prysmian-green-light text-white font-medium text-sm transition-colors">
+                  <TrendingUp size={14} /> {buContent?.primaryCta.label ?? "Today's market brief"}
                 </Link>
-                <Link to="/projects" className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-medium text-sm transition-colors">
-                  <Pickaxe size={14} /> Mining pipeline
+                <Link to={buContent?.secondaryCta.to ?? "/projects"} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-medium text-sm transition-colors">
+                  <Pickaxe size={14} /> {buContent?.secondaryCta.label ?? "Mining pipeline"}
                 </Link>
               </div>
             </div>
@@ -116,13 +163,20 @@ export default function LandingPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-sm font-semibold text-ink">Today's AI Brief</h2>
+                  <h2 className="text-sm font-semibold text-ink">{buContent ? `${buContent.headline} · AI Brief` : "Today's AI Brief"}</h2>
                   <Badge tone="green" dot>Auto-generated · evidence-backed</Badge>
                   <span className="text-[11px] text-ink-faint ml-auto">Generated {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
                 </div>
                 <p className="mt-1.5 text-sm text-ink-muted leading-relaxed">
-                  {generateBrief({ projectsTotal, newsCount, draftsCount, highAlerts, flaggedCount: flaggedProjects.length })}
+                  {buContent?.briefParagraph ?? generateBrief({ projectsTotal, newsCount, draftsCount, highAlerts, flaggedCount: flaggedProjects.length })}
                 </p>
+                {buContent && (
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {buContent.watchlist.map((w) => (
+                      <span key={w} className="chip bg-surface-subtle text-ink-muted">{w}</span>
+                    ))}
+                  </div>
+                )}
                 <div className="mt-2.5 flex flex-wrap gap-2">
                   <Link to="/review" className="inline-flex items-center gap-1.5 chip bg-accent-amber-light text-accent-amber hover:bg-accent-amber/15">
                     <Inbox size={11} /> {draftsCount} drafts to review
@@ -140,11 +194,53 @@ export default function LandingPage() {
 
           {/* KPI strip */}
           <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <Stat label="Mining projects" value={projectsTotal} delta={8} deltaLabel="vs last quarter" icon={<Pickaxe size={15} />} accent="green" />
-            <Stat label="News tracked (30d)" value={newsCount} delta={12} deltaLabel="vs prev 30d" icon={<Newspaper size={15} />} accent="blue" />
-            <Stat label="Countries covered" value={5} hint="EU focus · expanding to MENA" icon={<Globe size={15} />} accent="amber" />
-            <Stat label="AI confidence" value="92%" delta={3} deltaLabel="avg evidence score" icon={<Sparkles size={15} />} accent="green" />
+            {buContent ? (
+              buContent.kpis.map((k, i) => {
+                // Replace placeholder "—" with live values where applicable
+                const liveValue =
+                  k.label.toLowerCase().includes("project") && k.value === "—" ? String(projectsTotal) :
+                  k.label.toLowerCase().includes("cable demand") && k.value === "—" ? `${Math.round((projects.data?.items ?? []).reduce((s, p) => s + Number(p.cable_demand_estimate_km ?? 0), 0)).toLocaleString()} km` :
+                  k.label.toLowerCase().includes("duration") && k.value === "—" ? avgDuration(projects.data?.items ?? []) :
+                  k.value;
+                return (
+                  <Stat
+                    key={i}
+                    label={k.label}
+                    value={liveValue}
+                    delta={k.delta}
+                    deltaLabel={k.delta != null ? "YoY" : undefined}
+                    hint={k.hint}
+                    icon={<Sparkles size={15} />}
+                    accent={k.accent ?? "green"}
+                  />
+                );
+              })
+            ) : (
+              <>
+                <Stat label="Mining projects" value={projectsTotal} delta={8} deltaLabel="vs last quarter" icon={<Pickaxe size={15} />} accent="green" />
+                <Stat label="News tracked (30d)" value={newsCount} delta={12} deltaLabel="vs prev 30d" icon={<Newspaper size={15} />} accent="blue" />
+                <Stat label="Countries covered" value={5} hint="EU focus · expanding to MENA" icon={<Globe size={15} />} accent="amber" />
+                <Stat label="AI confidence" value="92%" delta={3} deltaLabel="avg evidence score" icon={<Sparkles size={15} />} accent="green" />
+              </>
+            )}
           </section>
+
+          {/* Recommended actions (BU-specific) */}
+          {buContent && (
+            <section className="card p-4 bg-gradient-to-br from-prysmian-green/5 to-transparent">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-lg bg-accent-amber-light text-accent-amber flex items-center justify-center shrink-0">
+                  <TrendingUp size={16} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-ink">Recommended next 60 days · {buMeta?.short}</h3>
+                  <ol className="mt-2 space-y-1.5 text-sm text-ink-muted list-decimal list-inside">
+                    {buContent.recommendedActions.map((a, i) => <li key={i}>{a}</li>)}
+                  </ol>
+                </div>
+              </div>
+            </section>
+          )}
 
           <div className="text-center pt-2">
             <button onClick={() => setTab("activity")} className="btn-ghost text-xs">
@@ -317,6 +413,29 @@ function generateBrief({ projectsTotal, newsCount, draftsCount, highAlerts, flag
   if (highAlerts > 0) parts.push(`${highAlerts} high-severity alerts triggered`);
   parts.push("copper momentum sustained on supply tightening, EU permits trending mixed");
   return parts.join(" · ") + ".";
+}
+
+function BuTab({ active, onClick, label, hint }: { active: boolean; onClick: () => void; label: string; hint?: string }) {
+  return (
+    <button
+      onClick={onClick}
+      title={hint}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+        active
+          ? "bg-white text-ey-navy shadow-card border border-line"
+          : "text-ink-muted hover:text-ink hover:bg-white/60"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function avgDuration(items: { start_year: number | null; end_year: number | null }[]): string {
+  const durs = items.filter((p) => p.start_year && p.end_year).map((p) => (p.end_year! - p.start_year!));
+  if (!durs.length) return "—";
+  const avg = durs.reduce((s, x) => s + x, 0) / durs.length;
+  return `${avg.toFixed(1)} yr`;
 }
 
 function relTime(iso: string | null | undefined) {

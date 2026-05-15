@@ -58,10 +58,12 @@ export default {
       keyframes: {
         "pulse-soft": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0.55 } },
         "fade-in": { "0%": { opacity: 0, transform: "translateY(4px)" }, "100%": { opacity: 1, transform: "translateY(0)" } },
+        "slide-in-right": { "0%": { transform: "translateX(100%)", opacity: 0 }, "100%": { transform: "translateX(0)", opacity: 1 } },
       },
       animation: {
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
         "fade-in": "fade-in 220ms ease-out",
+        "slide-in-right": "slide-in-right 280ms cubic-bezier(0.16, 1, 0.3, 1)",
       },
     }
   },

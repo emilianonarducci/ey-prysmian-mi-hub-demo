@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Layout from "./components/Layout";
 import LandingPage from "./pages/LandingPage";
 import CountryIdPage from "./pages/CountryIdPage";
+import BuIdPage from "./pages/BuIdPage";
 import ProjectListPage from "./pages/ProjectListPage";
 import MarketTrendsPage from "./pages/MarketTrendsPage";
 import NewsReportsPage from "./pages/NewsReportsPage";
@@ -12,6 +13,7 @@ import ProjectDetailPage from "./pages/ProjectDetailPage";
 import ReviewQueuePage from "./pages/ReviewQueuePage";
 import AgentsPage from "./pages/AgentsPage";
 import AlertsPage from "./pages/AlertsPage";
+import AdminPage from "./pages/AdminPage";
 
 const qc = new QueryClient();
 
@@ -40,6 +42,8 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/country/:id" element={<CountryIdPage />} />
             <Route path="/country" element={<Navigate to="/country/italy" replace />} />
+            <Route path="/bu/:id" element={<BuIdPage />} />
+            <Route path="/bu" element={<Navigate to="/bu/ic" replace />} />
             <Route path="/trends" element={<MarketTrendsPage />} />
             <Route path="/news" element={<NewsReportsPage />} />
             <Route path="/projects" element={<ProjectListPage />} />
@@ -48,6 +52,7 @@ export default function App() {
             <Route path="/review" element={<ReviewQueuePage />} />
             <Route path="/agents" element={<AgentsPage />} />
             <Route path="/alerts" element={<AlertsPage />} />
+            <Route path="/admin" element={<AdminPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
